@@ -4,7 +4,11 @@
   <div class="app-main-layout">
     <main class="app-content" :class="{ full: !isMenuOpen }">
       <div class="app-page">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <transition name="router" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </div>
     </main>
 
@@ -30,4 +34,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.router-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.router-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.router-enter-from,
+.router-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>
