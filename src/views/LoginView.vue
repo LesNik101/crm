@@ -52,6 +52,7 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { mapActions } from "vuex";
 export default {
   name: "loginView",
   data: () => ({
@@ -62,11 +63,17 @@ export default {
     },
   }),
   methods: {
-    loginHandler() {
+    ...mapActions("userModule", ["loginWithEmaiAndPassword"]),
+    async loginHandler() {
       console.log(this.v$);
       this.v$.$validate();
       if (!this.v$.$error) {
-        this.$router.push("/");
+        try {
+          await this.loginWithEmaiAndPassword(this.form);
+          this.$router.push("/");
+        } catch (error) {
+          this.$Message(error.message);
+        }
       }
     },
   },

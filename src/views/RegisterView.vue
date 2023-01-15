@@ -73,6 +73,7 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { mapActions } from "vuex";
 export default {
   name: "registerView",
   data: () => ({
@@ -84,10 +85,16 @@ export default {
     },
   }),
   methods: {
-    registerHandler() {
+    ...mapActions("userModule", ["registerWithEmailAndPassword"]),
+    async registerHandler() {
       this.v$.$validate();
       if (!this.v$.$error) {
-        this.$router.push("/");
+        try {
+          await this.registerWithEmailAndPassword(this.form);
+          this.$router.push("/");
+        } catch (error) {
+          this.$Message(error.message);
+        }
       }
     },
   },
